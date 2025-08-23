@@ -17,3 +17,8 @@
 - Syncthing
 - Rclone
 - Restic
+
+
+##### Next up
+- Restructure so we have a `desk` and `deck` image.
+  - Both need to have a dx (developer experience) version.

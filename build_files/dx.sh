@@ -1,3 +1,10 @@
+#!/bin/bash
+
+# DX-specific packages for bazzpro (desktop experience)
+
+dnf5 install -y xorg-x11-server-Xwayland xdg-desktop-portal-wlr wlroots sway waybar grim slurp mako clipman --skip-unavailable || true
+
+# Any DX-specific services to enable can be added here
 export DNF5_ASSUME_ALWAYS_YES=true
 export DNF5_DISABLE_REPO_EXCLUDES=all
 
