@@ -25,7 +25,6 @@ RUN --mount=type=cache,dst=/var/cache \
         if [ -f /ctx/build_files/${VARIANT}/devel.sh ]; then chmod +x /ctx/build_files/${VARIANT}/devel.sh; /ctx/build_files/${VARIANT}/devel.sh; fi; \
         if [ -f /ctx/build_files/dx.sh ]; then chmod +x /ctx/build_files/dx.sh; /ctx/build_files/dx.sh; fi; \
       fi; \
-      if [ -f /ctx/build_files/dev.sh ]; then /ctx/build_files/dev.sh; fi; \
-      ostree container commit'
+  ostree container commit'
 
 RUN bootc container lint
