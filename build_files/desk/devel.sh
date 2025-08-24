@@ -1,8 +1,8 @@
 #!/bin/bash
 
-set -ouex pipefail
+set -euo pipefail
 
-# Desk DX-specific build steps can go here
+# Desk development helper script
+# Put small dev-only tweaks here (not part of the bundled image)
 
-# Source shared steps
-source "$(dirname "$0")/../shared.sh"
+echo "Desk devel helper (no-op)"

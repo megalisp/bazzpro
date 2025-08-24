@@ -31,9 +31,9 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v5
 
-      - name: Run desk DX script
+      - name: Run DX script
         run: |
-          bash build_files/desk/dx.sh
+          bash build_files/dx.sh
 
       - name: Image Metadata
         uses: docker/metadata-action@v5
