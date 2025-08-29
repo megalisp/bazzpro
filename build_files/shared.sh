@@ -12,7 +12,7 @@ systemctl enable podman.socket
 # Install kando
 if ! command -v kando &> /dev/null; then
 	if [ ! -d "/opt/kando" ]; then
-		mkdir -p /opt
+		mkdir -p /opt || true
 		git clone https://github.com/kando-menu/kando.git /opt/kando
 		cd /opt/kando
 		npm install
