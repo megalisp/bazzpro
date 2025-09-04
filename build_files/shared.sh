@@ -11,3 +11,7 @@ if ! command -v kando &> /dev/null; then
 	curl -L -o /tmp/kando.rpm "https://github.com/kando-menu/kando/releases/download/v2.0.0/kando-2.0.0-1.x86_64.rpm"
 	dnf5 install -y /tmp/kando.rpm || dnf install -y /tmp/kando.rpm
 fi
+
+
+dnf copr enable agundur/KCast
+dnf5 install -y kcast
