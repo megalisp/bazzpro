@@ -12,6 +12,6 @@ if ! command -v kando &> /dev/null; then
 	dnf5 install -y /tmp/kando.rpm || dnf install -y /tmp/kando.rpm
 fi
 
-
-dnf copr enable agundur/KCast
-dnf5 install -y kcast
+# Disable for now; Fails because needs catt which is unmet.
+# dnf copr enable -y agundur/KCast
+# dnf5 install -y kcast
