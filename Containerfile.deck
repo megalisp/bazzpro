@@ -1,0 +1,30 @@
+FROM ghcr.io/ublue-os/bazzite-deck:latest
+
+ARG VARIANT=deck
+ARG RUN_DX=false
+
+COPY build_files /ctx/build_files
+
+RUN --mount=type=cache,dst=/var/cache \
+    --mount=type=cache,dst=/var/log \
+    --mount=type=tmpfs,dst=/tmp \
+    /bin/sh -c '\
+      set -eux; \
+      # Execute the variant bundle script in-place so relative paths work (e.g. ../shared.sh)
+      if [ -f /ctx/build_files/${VARIANT}/bundle.sh ]; then \
+        chmod +x /ctx/build_files/${VARIANT}/bundle.sh; \
+      elif [ -f /ctx/build_files/bundle.sh ]; then \
+        chmod +x /ctx/build_files/bundle.sh; \
+      else \
+        echo "No bundle.sh found for variant '${VARIANT}'"; exit 1; \
+      fi; \
+      if [ -f /ctx/build_files/shared.sh ]; then chmod +x /ctx/build_files/shared.sh; fi; \
+      /ctx/build_files/${VARIANT}/bundle.sh; \
+      # Run devel helper only for DX builds
+      if [ "${RUN_DX}" = "true" ]; then \
+        if [ -f /ctx/build_files/${VARIANT}/devel.sh ]; then chmod +x /ctx/build_files/${VARIANT}/devel.sh; /ctx/build_files/${VARIANT}/devel.sh; fi; \
+        if [ -f /ctx/build_files/dx.sh ]; then chmod +x /ctx/build_files/dx.sh; /ctx/build_files/dx.sh; fi; \
+      fi; \
+  ostree container commit'
+
+RUN bootc container lint

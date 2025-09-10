@@ -1,0 +1,75 @@
+name: Build container image - bazzpro-desk
+on:
+  pull_request:
+    branches:
+      - main
+  schedule:
+    - cron: '05 10 * * *'  # 10:05am UTC everyday
+  push:
+    branches:
+      - main
+    paths-ignore:
+      - '**/README.md'
+  workflow_dispatch:
+
+env:
+  IMAGE_DESC: "BazzPro Desk image"
+  IMAGE_KEYWORDS: "bazzpro,desk"
+  IMAGE_LOGO_URL: "https://avatars.githubusercontent.com/u/120078124?s=200&v=4"
+  IMAGE_NAME: "bazzpro-desk"
+  IMAGE_REGISTRY: "ghcr.io/${{ github.repository_owner }}"
+  DEFAULT_TAG: "latest"
+
+jobs:
+  build_push:
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: read
+      packages: write
+      id-token: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+
+      - name: Image Metadata
+        uses: docker/metadata-action@v5
+        id: metadata
+        with:
+          tags: |
+            type=raw,value=${{ env.DEFAULT_TAG }}
+          labels: |
+            org.opencontainers.image.description=${{ env.IMAGE_DESC }}
+            org.opencontainers.image.title=${{ env.IMAGE_NAME }}
+            io.artifacthub.package.logo-url=${{ env.IMAGE_LOGO_URL }}
+
+      - name: Build Image
+        uses: redhat-actions/buildah-build@v2
+        id: build_image
+        with:
+          containerfiles: |
+            ./Containerfile.desk
+          image: ${{ env.IMAGE_NAME }}
+          build-args: |
+            VARIANT=desk
+            RUN_DX=false
+          tags: ${{ steps.metadata.outputs.tags }}
+          labels: ${{ steps.metadata.outputs.labels }}
+          oci: false
+
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@v3
+        if: github.ref == format('refs/heads/{0}', github.event.repository.default_branch)
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Push To GHCR
+        uses: redhat-actions/push-to-registry@v2
+        if: github.ref == format('refs/heads/{0}', github.event.repository.default_branch)
+        with:
+          registry: ${{ env.IMAGE_REGISTRY }}
+          image: ${{ env.IMAGE_NAME }}
+          tags: ${{ steps.metadata.outputs.tags }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
